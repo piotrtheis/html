@@ -213,16 +213,19 @@ class FormBuilder
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function label($name, $value = null, $options = [])
-    {
-        $this->labels[] = $name;
+    public function label($name, $value = null, $options = []) {
+		$this->labels[] = $name;
 
-        $options = $this->html->attributes($options);
+		$options = $this->html->attributes($options);
 
-        $value = e($this->formatLabel($name, $value));
+		if (method_exists($this->model, 'getFieldLabel')) {
+			$value = $this->model->getFieldLabel($name);
+		} else {
+			$value = e($this->formatLabel($name, $value));
+		}
 
-        return $this->toHtmlString('<label for="' . $name . '"' . $options . '>' . $value . '</label>');
-    }
+		return $this->toHtmlString('<label for="' . $name . '"' . $options . '>' . $value . '</label>');
+	}
 
     /**
      * Format the label value.
