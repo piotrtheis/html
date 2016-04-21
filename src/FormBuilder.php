@@ -1105,11 +1105,21 @@ class FormBuilder
      */
     protected function getModelValueAttribute($name)
     {
+        $value = null;
+        
+
         if (method_exists($this->model, 'getFormValue')) {
             return $this->model->getFormValue($name);
         }
 
-        return data_get($this->model, $this->transformKey($name));
+        $value =  data_get($this->model, $this->transformKey($name));    
+        
+        //if still null, try to get value directly from model
+        if(!(bool)$value){
+            $value = $this->model->{$this->transformKey($name)};
+        }
+
+        return $value;
     }
 
     /**
