@@ -262,8 +262,15 @@ class FormBuilder
         $id = $this->getIdAttribute($name, $options);
 
         if (! in_array($type, $this->skipValueTypes)) {
-            $value = $this->getValueAttribute($name, $value);
+
+            if(is_callable($value)){
+                $value = $value($this->getValueAttribute($name, null), $this);
+            } else {
+                $value = $this->getValueAttribute($name, $value);
+            }
         }
+
+
 
         // Once we have the type, value, and ID we can merge them into the rest of the
         // attributes array so we can convert them into their HTML attribute format
